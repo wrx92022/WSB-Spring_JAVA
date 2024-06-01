@@ -34,12 +34,12 @@ class UserController {
                 .toList();
     }
 
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+    public UserDto createUser(@RequestBody UserDto userDto) {
         UserDto createdUserDto = userServiceImpl.createUser(userDto);
-        System.out.println("User with e-mail: " + userDto.email() + "passed to the request");
-        return ResponseEntity.ok(createdUserDto);
+        System.out.println("User with e-mail: " + userDto.email() + " passed to the request");
+        return createdUserDto;
     }
 
     @DeleteMapping("/{userId}")
