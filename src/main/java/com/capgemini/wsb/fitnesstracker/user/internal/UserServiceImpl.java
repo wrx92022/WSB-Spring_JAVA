@@ -21,8 +21,15 @@ public class UserServiceImpl implements UserService, UserProvider {
     @Autowired
     private final UserRepository userRepository;
 
+    @Autowired
+    private UserMapper userMapper;
 
-
+    @Override
+    public UserDto createUser(UserDto userDto) {
+        User user = userMapper.toEntity(userDto);
+        user = userRepository.save(user);
+        return userMapper.toDto(user);
+    }
     @Override
     public User createUser(final User user) {
         log.info("Creating User {}", user);
@@ -68,6 +75,11 @@ public class UserServiceImpl implements UserService, UserProvider {
     }
 
     @Override
+    public Optional<User> findUserById(Long id) {
+        return Optional.empty();
+    }
+
+    @Override
     public Optional<User> getUser(final Long userId) {
         return userRepository.findById(userId);
     }
@@ -80,5 +92,14 @@ public class UserServiceImpl implements UserService, UserProvider {
     @Override
     public List<User> findAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public UserDto updateUser(UserDto userDto) {
+        User existingUser = userRepository.findById(userDto.Id())
+                .orElseThrow(() -> new RuntimeException(String.valueOf(userDto.Id())));
+        userMapper.updateUserFromDto(userDto, existingUser);
+        existingUser = userRepository.save(existingUser);
+        return userMapper.toDto(existingUser);
     }
 }

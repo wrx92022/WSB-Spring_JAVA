@@ -21,9 +21,7 @@ import java.util.Optional;
 class UserController {
 
     private final UserServiceImpl userServiceImpl;
-
     private final UserMapper userMapper;
-
     private final TrainingServiceImpl trainingServiceImpl;
 
 
@@ -36,10 +34,12 @@ class UserController {
                 .toList();
     }
 
-    @PostMapping()
+    @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public User createUser(@RequestBody UserDto userDto) {
-        return userServiceImpl.createUser(userMapper.toEntity(userDto));
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+        UserDto createdUserDto = userServiceImpl.createUser(userDto);
+        System.out.println("User with e-mail: " + userDto.email() + "passed to the request");
+        return ResponseEntity.ok(createdUserDto);
     }
 
     @DeleteMapping("/{userId}")
@@ -77,7 +77,7 @@ class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/basic")
+    @GetMapping("/simple")
     public List<SimpleUser> getAllBasicUser() {
         return userServiceImpl.findAllUsers().stream()
                 .map(UserMapper::simpleToDTO)

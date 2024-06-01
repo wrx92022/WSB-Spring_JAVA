@@ -25,4 +25,11 @@ class UserMapper {
     static SimpleUser simpleToDTO(User user) {
         return new SimpleUser(user.getId(), user.getFirstName(), user.getLastName());
     }
+
+    public void updateUserFromDto(UserDto dto, User user) {
+        user.setFirstName(dto.firstName());
+        user.setLastName(dto.lastName());
+        user.setBirthdate(dto.birthdate());
+        user.setEmail(dto.email());
+    }
 }
