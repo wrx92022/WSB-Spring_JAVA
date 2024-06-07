@@ -30,14 +30,6 @@ public class UserServiceImpl implements UserService, UserProvider {
         user = userRepository.save(user);
         return userMapper.toDto(user);
     }
-    @Override
-    public User createUser(final User user) {
-        log.info("Creating User {}", user);
-        if (user.getId() != null) {
-            throw new IllegalArgumentException("User has already DB ID, update is not permitted!");
-        }
-        return userRepository.save(user);
-    }
 
     @Override
     public void deleteUser(Long id) {
@@ -60,23 +52,8 @@ public class UserServiceImpl implements UserService, UserProvider {
     }
 
     @Override
-    public List<User> getUsersByAge(int age) {
-        return List.of();
-    }
-
-    @Override
     public List<User> getUserByAgeOlderThanX(LocalDate date) {
         return userRepository.findUsersByBirthdateBefore(date);
-    }
-
-    @Override
-    public User updateUser(Long id, User updatedUser) {
-        return null;
-    }
-
-    @Override
-    public Optional<User> findUserById(Long id) {
-        return Optional.empty();
     }
 
     @Override
@@ -92,14 +69,5 @@ public class UserServiceImpl implements UserService, UserProvider {
     @Override
     public List<User> findAllUsers() {
         return userRepository.findAll();
-    }
-
-    @Override
-    public UserDto updateUser(UserDto userDto) {
-        User existingUser = userRepository.findById(userDto.Id())
-                .orElseThrow(() -> new RuntimeException(String.valueOf(userDto.Id())));
-        userMapper.updateUserFromDto(userDto, existingUser);
-        existingUser = userRepository.save(existingUser);
-        return userMapper.toDto(existingUser);
     }
 }
