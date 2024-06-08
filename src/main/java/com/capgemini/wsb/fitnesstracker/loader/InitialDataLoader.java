@@ -1,5 +1,6 @@
 package com.capgemini.wsb.fitnesstracker.loader;
 
+import com.capgemini.wsb.fitnesstracker.stat.api.Stat;
 import com.capgemini.wsb.fitnesstracker.training.api.Training;
 import com.capgemini.wsb.fitnesstracker.training.internal.ActivityType;
 import com.capgemini.wsb.fitnesstracker.user.api.User;
@@ -37,6 +38,9 @@ class InitialDataLoader {
     @Autowired
     private JpaRepository<Training, Long> trainingRepository;
 
+    @Autowired
+    private JpaRepository<Stat, Long> statRepository;
+
     @EventListener
     @Transactional
     @SuppressWarnings({"squid:S1854", "squid:S1481", "squid:S1192", "unused"})
@@ -47,7 +51,7 @@ class InitialDataLoader {
 
         List<User> sampleUserList = generateSampleUsers();
         List<Training> sampleTrainingList = generateTrainingData(sampleUserList);
-
+        List<Stat> sampleStatList = generateStatData(sampleUserList);
 
         log.info("Finished loading initial data");
     }
@@ -162,6 +166,32 @@ class InitialDataLoader {
 
         return trainingData;
     }
+
+    private List<Stat> generateStatData(List<User> users) {
+        List<Stat> statData = new ArrayList<>();
+
+        Stat statistic1 = new Stat(users.get(0),
+                4,
+                12,
+                6);
+        Stat statistic2 = new Stat(users.get(1),
+                1,
+                5,
+                8);
+        Stat statistic3 = new Stat(users.get(2),
+                2,
+                15,
+                3);
+
+        statData.add(statistic1);
+        statData.add(statistic2);
+        statData.add(statistic3);
+
+        statData.forEach(stat -> statRepository.save(stat));
+
+        return statData;
+    }
+
     private void verifyDependenciesAutowired() {
         if (isNull(userRepository)) {
             throw new IllegalStateException("Initial data loader was not autowired correctly " + this);
